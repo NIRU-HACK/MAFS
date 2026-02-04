@@ -12,4 +12,21 @@
 
 **Why:** Using separate val and test sets avoids overfitting to your evaluation data and gives trustworthy performance estimates.
 
-**How to complete:** Run the partition script (see below), then point your training config at the new `train`/`val`/`test` folders (e.g. in a YOLO dataset YAML).
+**How to complete:** Run the `partition_dataset.py` script from the root directory.
+
+### Usage
+
+```bash
+# Basic usage (defaults to 70/20/10)
+python "Training and Validation/partition_dataset.py" --images data/sar --annotations data/annotations --output data/partitioned
+
+# Custom split with seed for reproducibility
+python "Training and Validation/partition_dataset.py" --images data/sar --annotations data/annotations --output data/partitioned --seed 42 --train 0.8 --val 0.1 --test 0.1
+```
+
+### Script Output
+The script creates a YOLO-compatible directory structure:
+- `output/train/images`, `output/train/labels`
+- `output/val/images`,   `output/val/labels`
+- `output/test/images`,  `output/test/labels`
+- `output/dataset.yaml` (Configuration file for YOLO training)
