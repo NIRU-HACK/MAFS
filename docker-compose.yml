@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  # -----------------------------
+  # Service 1: MAFS Web Dashboard
+  # -----------------------------
+  mafs_web:
+    container_name: mafs_web_dashboard
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8501:8501"
+    volumes:
+      # Map config file
+      - ./config.json:/app/config.json
+      # Map folders with spaces (using quotes)
+      - "./Final Web Application/:/app/Final Web Application/"
+      - "./Inference and Implementation/:/app/Inference and Implementation/"
+      - "./Preprocessing/:/app/Preprocessing/"
+      # Persist output to your local machine
+      - "./Final Web Application/output:/app/Final Web Application/output"
+    environment:
+      - STREAMLIT_SERVER_ADDRESS=0.0.0.0
+    restart: unless-stopped
+
+  # -----------------------------
+  # Service 2: MAFS Edge Node (Jetson)
+  # -----------------------------
+  mafs_jetson:
+    container_name: mafs_edge_node
+    build:
+      context: ./Jetson Nano Inference
+      dockerfile: Dockerfile
+    # Runtime settings for GPU access
+    runtime: nvidia
+    network_mode: host
+    privileged: true
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=compute,utility
+      - DISPLAY=:0
+    volumes:
+      # Map config file to allow change of credentials without rebuilding
+      - ./config.json:/app/config.json
+      # Map only the needed logic for hot reloading
+      - "./Inference and Implementation/:/app/Inference and Implementation/"
+      - "./Preprocessing/:/app/Preprocessing/"
+      # Persist inference outputs
+      - "./Inference and Implementation/output:/app/Inference and Implementation/output"
+    working_dir: /app
+    # Interactive mode settings (keeps container alive for SSH/exec)
+    stdin_open: true
+    tty: true
