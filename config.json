@@ -1,0 +1,3 @@
+{
+    "documentation": "/**\n * Sets up Google Earth Engine APIs for geospatial data processing and analysis.\n * This function initializes the necessary authentication and configuration required\n * to access Google Earth Engine's satellite imagery, geospatial datasets, and\n * computational resources for environmental monitoring and mapping applications.\n */"
+}

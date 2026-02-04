@@ -1,0 +1,19 @@
+# --- System & Python Cache (Standard) ---
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# --- Secrets & Local Environments ---
+.env
+.dockerignore
+
+# --- Documentation ---
+*.pdf
+*.docx
+*.ipynb
+
+# --- IDE & Git Metadata ---
+.vscode/
+.git
+.gitignore
