@@ -1,0 +1,36 @@
+# Core web framework and API dependencies
+streamlit>=1.40.0 #frame work for web application
+requests>=2.25.0 #handle HTTP requests
+websockets>=12.0 # for real time communication
+
+# Data processing and analysis
+numpy>=1.20.0 #image manipulation
+pandas>=2.0.0 #process AIS CSV datasets
+scipy>=1.7.0 #image and signal processing such as noise reduction
+
+# Computer vision and machine learning
+opencv-python-headless>=4.5.0 #core image processing library;executes the preprocessing pipeline, including Gaussian blurring, CLAHE (contrast enhancement), morphological operations (erosion/dilation), and land masking
+ultralytics>=8.0.0 #Load trained YOLOV11m model and perform ship detection
+inference_sdk #connects to interface servers 
+supervision>=0.20.0 #handle detection outputs, such as drawing bounding boxes, filtering predictions by confidence, and counting detected ships.
+
+# Image processing
+pillow>=8.0.0 #handles basic image file operations, croping images to tiles
+matplotlib>=3.5.0 #generate the statistical charts (e.g., confidence curves, confusion matrice
+
+# Geospatial and mapping
+folium>=0.15.0 # Creates the interactive maps for users select a geographic Region of Interest (ROI) for analysis
+streamlit_folium>=0.20.0 # Allows folium maps to be embedded directly into the Streamlit
+earthengine-api>=0.1.400 #programmatically search for, filter, and download Sentinel-1 SAR imagery
+rasterio>=1.3.0 # reading the geolocation metadata embedded in SAR .tiff files, allowing the system to map pixel coordinates to real-world locations.
+geemap>=0.32.0 # Specialized library for retrieving images from Google Earth Engine 
+
+# UI components
+streamlit-option-menu>=0.3.0 # Creates the navigation menu in the web app
+
+# Data serialization and configuration
+PyYAML>=6.0.0 #read model parameters 
+toml>=0.10.0 #streamlit global configurations
+
+# Async and HTTP client dependencies
+aiohttp>=3.8.0 #handle multiple data streams or user requests concurrently without freezing
