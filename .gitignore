@@ -39,3 +39,14 @@ venv_mafs
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+#data
+*.csv
+data/sar/
+data/ais/
+datasets/
+raw/
+
+#documents
+*.pdf
+*.docx

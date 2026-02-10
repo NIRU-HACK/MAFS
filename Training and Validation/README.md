@@ -1,5 +1,28 @@
 # Training and Validation
 
+## SAR Ship Detection Benchmark Datasets
+
+| Dataset Name | Images | Resolution / Satellite | Image Shape | Instances | Related Paper |
+| --- | --- | --- | --- | --- | --- |
+| **SSDD** | 1,160 | 1–15m (S1, RS2, TSX) |  | 2,358 | [IEEE Xplore](https://ieeexplore.ieee.org/document/8124934) |
+| **OpenSARShip 1.0** | 11,346 | 2–22m (Sentinel-1) |  to  | 67,489 | [IEEE Xplore](https://ieeexplore.ieee.org/document/8067489) |
+| **OpenSARShip 2.0** | 34,528 | 2–22m (Sentinel-1) |  to  | — | [IEEE Xplore](https://ieeexplore.ieee.org/document/8124929) |
+| **SAR-Ship-Dataset** | 43,819 | 3–25m (S1, Gaofen-3) |  | 59,535 | [MDPI Paper](https://www.mdpi.com/2072-4292/11/7/765) |
+| **HRSID** | 5,604 | 0.5–3m (S1B, TSX, TDX) |  | 16,951 | [IEEE Xplore](https://ieeexplore.ieee.org/document/9127939) |
+| **LS-SSDD-v1.0** | 9,000 | Sentinel-1 |  | 6,015 | [MDPI Paper](https://www.mdpi.com/2072-4292/12/18/2997) |
+| **DSSDD** | 1,236 | Sentinel-1 |  | 3,540 | [MDPI Paper](https://www.mdpi.com/1424-8220/21/24/8478) |
+| **SRSDD-v1.0** | 666 | Gaofen-3 |  | 2,884 | [MDPI Paper](https://www.mdpi.com/2072-4292/13/24/5104) |
+| **xView3-SAR** | 991 | 20m (Sentinel-1) |  | — | [arXiv Paper](https://arxiv.org/abs/2206.00897) |
+| **AIR-SARShip-1.0** | 1,116 | 1–3m (Gaofen-3) |  | — | [Journal of Radars](https://radars.ac.cn/en/article/doi/10.12000/JR19097) |
+
+---
+
+### Dataset Details
+
+* **Multi-Modal Support:** Datasets like **xView3-SAR** and **HRSID** are designed specifically for large-scale characterization and instance segmentation.
+* **Satellite Sources:** Most datasets utilize **Sentinel-1** data, though several incorporate high-resolution **Gaofen-3** or **TerraSAR-X** imagery.
+
+
 ## Partition datasets (70/20/10)
 
 **What it means:** Split your labeled dataset into three non-overlapping sets:

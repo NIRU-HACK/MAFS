@@ -276,29 +276,57 @@ python edge_inference.py \
 ---
 
 ## 📁 Project Structure
+This repository contains code and assets for maritime object detection and deployment.
+
+Project structure:
+
 ```
 MAFS/
-├── data/
-│   ├── sar/              # SAR imagery dataset
-│   ├── ais/              # AIS tracking data
-│   └── annotations/      # Training annotations
-├── models/
-│   ├── yolov11/          # YOLOv11 architecture
-│   └── preprocessing/    # Preprocessing modules
-├── scripts/
-│   ├── train.py          # Training script
-│   ├── evaluate.py       # Evaluation script
-│   └── convert_to_tensorrt.py
-├── web/
-│   ├── app.py            # Flask/FastAPI application
-│   └── templates/        # Web interface
-├── edge/
-│   ├── edge_inference.py # Jetson deployment
-│   └── Dockerfile        # Edge container
-├── requirements.txt
-├── README.md
-└── LICENSE
+├── Final Web Application/                     # UI + backend (web app)
+├── Inference and Implementation/              # Inference code and implementation notes
+├── Jetson Nano Inference/                     # Jetson-specific inference & deployment
+├── Model Optimization and Quantization/       # Optimization and quantization scripts
+├── Preprocessing/                             # Data preprocessing scripts
+├── Training and Validation/                   # Training scripts, validation, dataset partitioning
+│   ├── partition_dataset.py/                  # To partition the datasets for training, validation ands Testing
+├── data/                                      # sar/, ais/, annotations/
+│   ├── sar/
+|   |   ├── datasets                           # with merged dataset
+|   |   ├── raw                                # with raw datasets that were merged i.e SSDD ns SAR dataset
+│   ├── ais/
+│   ├── annotations/
+|   ├── benchmark PDF                           # PDF with benchmark models to evaluate and justify performance of the new system.
+├── models/                                     # model definitions, weights, preprocessing modules
+├── requirements.txt                            # Python dependencies
+├── config.json                                 # Project configuration
+├── docker-compose.yml                          # Docker compose for services
+├── Dockerfile                                  # Root Dockerfile
+├── README.md                                   # This file
+├── CONTRIBUTING.md                             # Contributing guidelines
+└── LICENSE                                     # Project license
 ```
+
+---
+
+## 📊 Dataset
+
+The training and evaluation dataset is a comprehensive corpus merged from multiple authoritative SAR ship detection sources:
+
+### Data Sources
+- **SSDD (SAR Ship Detection Dataset)** – Large-scale annotated SAR imagery with ship instances
+- **SAR-Ship Dataset** – Additional curated SAR-based ship detection data
+- **Custom Dataset from Copernicus** – Sentinel-1 SAR imagery sourced from the ESA Copernicus programme
+
+### Corpus Formation
+All datasets have been **merged and preprocessed** into a unified training corpus ensuring:
+- Consistent annotation standards
+- Balanced class distribution across vessel types and conditions
+- Geospatial and temporal diversity
+- VV and VH SAR polarization coverage
+
+### Dataset Access
+The primary dataset used for training and evaluation can be downloaded from:
+📥 [Google Drive Dataset Download](https://drive.google.com/drive/folders/15M7xfaLrIQzOE2WvD38jSEP0ZH0Hvq33?usp=sharing)
 
 ---
 
