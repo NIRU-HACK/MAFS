@@ -66,10 +66,19 @@ MAFS provides persistent, all-weather maritime domain awareness through:
 ### Core Technologies
 
 #### Computer Vision
-- **YOLOv11m** object detection model
-  - 4-5ms latency
-  - 52.5% mAP
-  - Optimized for detecting vessels of all sizes
+- **YOLOv11m Maritime** object detection model
+
+| Specification | Value |
+|---------------|-------|
+| **mAP (COCO)** | 51.5% |
+| **mAP (SAR Maritime)** | [To be benchmarked] |
+| **Parameters** | 20.1M |
+| **FLOPs** | 68.0B |
+| **Inference Latency** | 4.7ms (CPU), 1.92ms (optimized) |
+| **Edge Deployment** | <10W power consumption |
+| **Quantization Support** | FP16/INT8 with <3% accuracy loss |
+
+Optimized for detecting vessels of all sizes in SAR imagery.
 
 #### Deep Learning Frameworks
 - **PyTorch** for model training
@@ -134,8 +143,12 @@ graph LR
 
 | Metric | Value |
 |--------|-------|
-| **Latency** | 4-5ms detection time |
-| **Accuracy** | 52.5% mAP |
+| **Detection Latency** | 4.7ms (CPU), 1.92ms (optimized) |
+| **mAP (COCO)** | 51.5% |
+| **mAP (SAR Maritime)** | [To be benchmarked] |
+| **Model Size** | 20.1M parameters, 68.0B FLOPs |
+| **Edge Power** | <10W consumption |
+| **Quantization** | FP16/INT8 with <3% accuracy loss |
 | **Geolocation** | <20m deviation with proper calibration |
 | **Coverage** | 230,000+ km² maritime area |
 
