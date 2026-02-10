@@ -191,8 +191,11 @@ git clone https://github.com/yourusername/MAFS.git
 cd MAFS
 
 # Create virtual environment
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+Note that python 3.10 should be used for this project is necessary to satisfy the specific production requirements of the Jetson edge deployment. The Jetson will be set up running Ubuntu 22.04 LTS. Python 3.10 is the default system Python version shipped with Ubuntu 22.04, making it the most stable and native choice for that environment.
+
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process
+python3.10 -m venv venv_mafs
+source venv_mafs/bin/activate  # On Windows: venv_mafs\Scripts\activate
 
 # Install dependencies
 pip install -r requirements.txt
