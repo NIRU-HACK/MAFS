@@ -1,4 +1,103 @@
 # Training and Validation
+This README provides a comprehensive guide for the **Maritime Anomaly Fusion System (MAFS)** dataset pipeline. It covers the ingestion of multiple SAR (Synthetic Aperture Radar) sources, error recovery, and the standardization process within Roboflow for YOLOv11m training.
+
+---
+
+# MAFS Dataset Integration & Merging Guide
+
+## 🚀 Prerequisites
+
+1. **Roboflow Account:** [Sign up here](https://app.roboflow.com/) and create a project named `mafs`.
+2. **Resource Video:** [Uploading Images to Roboflow via CLI](https://docs.roboflow.com/developer/command-line-interface/upload-a-dataset).
+
+## 🛠️ Environment Setup
+
+Open your terminal (PowerShell recommended) and run the following to prepare your environment:
+
+```powershell
+# Set execution policy to allow scripts (Windows)
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process
+
+# Install the Roboflow SDK
+pip install roboflow
+
+# Authenticate with your account
+roboflow login
+
+```
+
+## 📥 Data Ingestion
+
+### 1. Importing the YOLO SAR Dataset
+
+For standard YOLO-formatted datasets, use the Roboflow CLI for high-speed upload:
+
+```powershell
+roboflow import -w mafs -p mafs "./Training and Validation/data/sar/raw/ship_dataset_v0"
+
+```
+
+### 2. Importing the SSDD Dataset (COCO Format)
+
+Because SSDD uses a complex COCO structure, use the custom manual upload script to ensure 1:1 annotation matching:
+
+```powershell
+python "Training and Validation/mafs_upload.py"
+
+```
+
+### 3. Error Recovery (Failed Images)
+
+If the upload log shows failures (e.g., "Unable to match annotation"), ensure those filenames are listed in `failed_images.txt` and run the retry script:
+
+```powershell
+python "Training and Validation/mafs_reupload_failed.py"
+
+```
+
+## 🔗 Merging Datasets in Roboflow UI
+
+Follow these steps in the [Roboflow Dashboard](https://app.roboflow.com/) to consolidate your data.
+
+### Step 1: Align Your Classes
+
+SSDD and YOLO datasets often use different labels for the same object.
+
+1. Select the **MAFS** project from your workspace.
+2. Click on **Classes** in the left sidebar.
+3. If you see multiple names like `0`, `vessel`, or `ship`, click **Modify Classes**.
+4. In the **Override** column, type **"ship"** for every entry to merge them into a single class.
+5. Click **Apply Changes**.
+
+### Step 2: Generate a Unified Version
+
+1. Go to the **Versions** tab and click **Generate New Version**.
+2. **Source Data:** Ensure all batches (SSDD_Train, Inshore, Offshore, YOLO_Batch, etc.) are selected.
+3. **Train/Test Split:** For the **MAFS** local partitioning workflow, move the slider to **100% Train**. This allows the local `partition_dataset.py` script to handle the 70/20/10 split with a fixed seed.
+4. **Preprocessing (Crucial):**
+* **Resize:** Set to **640x640 (Stretch)** to standardize all SAR sources.
+* **Auto-Orient:** Enabled (strips EXIF rotation data).
+
+
+5. **Augmentation:** Leave blank (0%). Augmentations should be handled during training or after partitioning to avoid data leakage.
+6. Click **Create**.
+
+## 📦 Export & Training
+
+1. Once the version is generated, click **Export Dataset**.
+2. Format: Choose **YOLOv11** (or the specific YOLO version you are using).
+3. Download the ZIP or use the `curl` link to pull the data to your training environment.
+
+## 🛰️ Future Data Expansion (Sentinel-1)
+
+When adding new Copernicus Sentinel-1 data (VV/VH polarization):
+
+1. Extract the dual-polarization bands.
+2. Label using the **AIS API** logic.
+3. Merge the new images/labels into your raw folders.
+4. Run `partition_dataset.py --seed 42` to re-distribute the expanded dataset into Train/Val/Test folders.
+
+---
 
 ## SAR Ship Detection Benchmark Datasets
 
