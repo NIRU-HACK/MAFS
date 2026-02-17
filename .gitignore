@@ -46,6 +46,8 @@ data/sar/
 data/ais/
 datasets/
 raw/
+corpenicus_raw/
+corpenicus_output/
 
 #documents
 *.pdf

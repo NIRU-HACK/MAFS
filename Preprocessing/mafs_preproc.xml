@@ -1,0 +1,84 @@
+<graph id="Graph">
+  <version>1.0</version>
+  <node id="Read">
+    <operator>Read</operator>
+    <sources/>
+    <parameters><file>${input}</file></parameters>
+  </node>
+
+  <node id="Subset">
+    <operator>Subset</operator>
+    <sources><sourceProduct refid="Read"/></sources>
+    <parameters>
+      <sourceBands>Amplitude_VH,Amplitude_VV</sourceBands>
+      <copyMetadata>true</copyMetadata>
+    </parameters>
+  </node>
+
+  <node id="Apply-Orbit-File">
+    <operator>Apply-Orbit-File</operator>
+    <sources><sourceProduct refid="Subset"/></sources>
+    <parameters>
+      <orbitType>Sentinel Precise (Auto Download)</orbitType>
+      <continueOnFail>true</continueOnFail>
+    </parameters>
+  </node>
+
+  <node id="ThermalNoiseRemoval">
+    <operator>ThermalNoiseRemoval</operator>
+    <sources><sourceProduct refid="Apply-Orbit-File"/></sources>
+  </node>
+
+  <node id="Calibration">
+    <operator>Calibration</operator>
+    <sources><sourceProduct refid="ThermalNoiseRemoval"/></sources>
+    <parameters>
+      <selectedPolarisations>VH,VV</selectedPolarisations>
+      <outputSigmaBand>true</outputSigmaBand>
+    </parameters>
+  </node>
+
+  <node id="Terrain-Correction">
+    <operator>Terrain-Correction</operator>
+    <sources><sourceProduct refid="Calibration"/></sources>
+    <parameters>
+      <demName>SRTM 3Sec</demName> 
+      <pixelSpacingInMeter>10.0</pixelSpacingInMeter>
+      <mapProjection>WGS84(DD)</mapProjection>
+      <nodataValueAtSea>false</nodataValueAtSea>
+    </parameters>
+  </node>
+
+  <node id="LinearToFromdB">
+    <operator>LinearToFromdB</operator>
+    <sources><sourceProduct refid="Terrain-Correction"/></sources>
+  </node>
+
+  <node id="BandMaths">
+    <operator>BandMaths</operator>
+    <sources><sourceProduct refid="LinearToFromdB"/></sources>
+    <parameters>
+      <targetBands>
+        <targetBand>
+          <name>VH_8bit</name>
+          <type>uint8</type>
+          <expression>if Sigma0_VH_db &lt; -35 then 0 else if Sigma0_VH_db &gt; 0 then 255 else (Sigma0_VH_db + 35) * (255 / 35)</expression>
+        </targetBand>
+        <targetBand>
+          <name>VV_8bit</name>
+          <type>uint8</type>
+          <expression>if Sigma0_VV_db &lt; -35 then 0 else if Sigma0_VV_db &gt; 0 then 255 else (Sigma0_VV_db + 35) * (255 / 35)</expression>
+        </targetBand>
+      </targetBands>
+    </parameters>
+  </node>
+
+  <node id="Write">
+    <operator>Write</operator>
+    <sources><sourceProduct refid="BandMaths"/></sources>
+    <parameters>
+      <file>${output}</file>
+      <formatName>GeoTIFF</formatName>
+    </parameters>
+  </node>
+</graph>
