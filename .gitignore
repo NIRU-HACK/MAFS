@@ -52,3 +52,6 @@ corpenicus_output/
 #documents
 *.pdf
 *.docx
+
+#secrets
+config.json
