@@ -4,9 +4,11 @@ import time
 import uuid
 import io
 import numpy as np
+import cv2
 from PIL import Image
 from dataclasses import dataclass
 from typing import Any, Dict, Optional
+from ultralytics import YOLO
 import land_masking
 
 # Define a simple job structure
@@ -24,6 +26,17 @@ class InferenceQueue:
         self._queue = queue.Queue()
         self._results: Dict[str, Job] = {}
         self._stop_event = threading.Event()
+        
+        # Initialize YOLOv11m
+        print("Initializing YOLOv11m model...")
+        try:
+            # We use yolo11m.pt as specified in the plan. 
+            # Ultralytics will auto-download it if not found.
+            self.model = YOLO("yolo11m.pt") 
+        except Exception as e:
+            print(f"Warning: Could not load YOLOv11m: {e}")
+            self.model = None
+
         self._worker_thread = threading.Thread(target=self._worker_process, daemon=True)
         self._worker_thread.start()
 
@@ -60,10 +73,10 @@ class InferenceQueue:
                         # --- BAND SELECTION ---
                         band = job.params.get('band', 'VV')
                         if band == 'VV':
-                            # Assume channel 0 is VV (Red in common RGB representations of SAR)
+                            # Assume channel 0 is VV
                             gray_img = img_array[:,:,0]
                         elif band == 'VH':
-                            # Assume channel 1 is VH (Green)
+                            # Assume channel 1 is VH
                             gray_img = img_array[:,:,1]
                         else:
                             # Default to average/grayscale
@@ -72,13 +85,37 @@ class InferenceQueue:
                         # --- LAND MASKING ---
                         final_masked, mask, steps = land_masking.process_image(gray_img, return_steps=True)
                         
-                        # Simulate some heavy processing
-                        time.sleep(1) 
+                        # --- YOLO INFERENCE ---
+                        detections = []
+                        result_img_with_boxes = Image.fromarray(final_masked).convert("RGB")
+                        
+                        if self.model:
+                            # Run inference on the masked image
+                            # Note: YOLO expects a 3-channel image typically, so we convert back
+                            inference_img = cv2.cvtColor(final_masked, cv2.COLOR_GRAY2RGB)
+                            results = self.model.predict(inference_img, conf=0.25)
+                            
+                            if results:
+                                res = results[0]
+                                # Get detection summary
+                                for box in res.boxes:
+                                    detections.append({
+                                        "box": box.xyxy[0].tolist(), # [x1, y1, x2, y2]
+                                        "conf": float(box.conf[0]),
+                                        "cls": int(box.cls[0]),
+                                        "name": res.names[int(box.cls[0])]
+                                    })
+                                
+                                # Generate plotted image
+                                plotted_bgr = res.plot()
+                                result_img_with_boxes = Image.fromarray(cv2.cvtColor(plotted_bgr, cv2.COLOR_BGR2RGB))
                         
                         # Store result
                         job.result = {
-                            "message": f"Processed successfully using {band} band.",
+                            "message": f"Processed successfully using {band} band. Found {len(detections)} vessels.",
                             "processed_image": Image.fromarray(final_masked),
+                            "detection_image": result_img_with_boxes,
+                            "detections": detections,
                             "mask": Image.fromarray(mask),
                             "steps": {name: Image.fromarray(img) for name, img in steps.items()},
                             "original_size": image.size

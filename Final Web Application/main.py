@@ -81,21 +81,30 @@ else:
                         
                         st.write(f"**Status:** {result['message']}")
                         
+                        # Display Detection and Mask side by side
                         cols = st.columns([1, 1])
                         with cols[0]:
-                            st.image(result['processed_image'], caption="Final Masked Image", use_container_width=True)
+                            st.image(result['detection_image'], caption="YOLOv11m Detections", use_container_width=True)
                         with cols[1]:
                             st.image(result['mask'], caption="Land Mask", use_container_width=True)
                         
+                        # Show detection summary if any
+                        if result.get('detections'):
+                            st.markdown("### 🛳️ Detections Summary")
+                            for i, det in enumerate(result['detections']):
+                                st.write(f"- **Vessel {i+1}**: Confidence: {det['conf']:.2%}")
+                        else:
+                            st.info("No vessels detected in this image.")
+
                         # Visualization of steps
                         if "steps" in result:
                             st.divider()
-                            st.subheader("Land Masking Visualization")
-                            step_names = list(result['steps'].keys())
-                            tabs = st.tabs(step_names)
-                            for i, name in enumerate(step_names):
-                                with tabs[i]:
-                                    st.image(result['steps'][name], caption=f"Step: {name}", use_container_width=True)
+                            with st.expander("🔍 Detailed Land Masking Steps"):
+                                step_names = list(result['steps'].keys())
+                                tabs = st.tabs(step_names)
+                                for i, name in enumerate(step_names):
+                                    with tabs[i]:
+                                        st.image(result['steps'][name], caption=f"Step: {name}", use_container_width=True)
 
                     elif job.status == 'failed':
                         st.error("❌ Failed")
